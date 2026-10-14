@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>System Health Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1>System Health Report</h1>
+    <p>Host: {{ report.hostname }}</p>
+    <p>Generated: {{ report.generated_at }}</p>
+    <h2>Overall Status: {{ report.status }}</h2>
+
+    <h2>System Metrics</h2>
+    <table>
+        <tr><th>Metric</th><th>Usage</th><th>Status</th></tr>
+        {% for name, metric in report.metrics.items() %}
+        <tr>
+            <td>{{ name }}</td>
+            <td>{{ metric.value }}%</td>
+            <td>{{ metric.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Application Log</h2>
+    <pre>{{ report.application_log | tojson(indent=2) }}</pre>
+
+    <h2>System Log</h2>
+    <pre>{{ report.system_log | tojson(indent=2) }}</pre>
+</body>
+</html>
