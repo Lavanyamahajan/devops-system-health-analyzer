@@ -8,9 +8,7 @@ def test_log_counts(tmp_path):
         "2026-10-14 09:01:00 ERROR Failed\n",
         encoding="utf-8",
     )
-
     result = analyze_log(str(log))
-
     assert result["total"] == 2
     assert result["levels"]["INFO"] == 1
     assert result["levels"]["ERROR"] == 1
@@ -23,23 +21,16 @@ def test_critical_log(tmp_path):
         "2026-10-14 09:00:00 CRITICAL Service stopped\n",
         encoding="utf-8",
     )
-
-    result = analyze_log(str(log))
-
-    assert result["status"] == "CRITICAL"
+    assert analyze_log(str(log))["status"] == "CRITICAL"
 
 
 def test_missing_log():
-    result = analyze_log("missing_file.log")
-
-    assert result["status"] == "CRITICAL"
+    assert analyze_log("missing_file.log")["status"] == "CRITICAL"
 
 
 def test_malformed_line(tmp_path):
     log = tmp_path / "app.log"
-    log.write_text("This is not a valid log line\n", encoding="utf-8")
-
+    log.write_text("Invalid log line\n", encoding="utf-8")
     result = analyze_log(str(log))
-
     assert result["malformed"] == 1
     assert result["total"] == 0
